@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+<head>
+</head>
+<body>
+  <div>
+    <label for="textInputID"> Albums</label>
+    <input type="text" id="name" >
+    <label for="textInputID"> Artist</label>
+    <input type="text" id="artist" > </br>
+    <label for="textInputID"> Year</label>
+    <input type="text" id="year" >
+    <label for="textInputID"> Genre</label>
+    <input type="text" id="genre">
+  </div>
+  <br>
+  <button id="create">Create Album</button>
+</div>
+<div id="albums">
+  {% for t in albums %}
+  <div >
+    Album::  {{t.name}}
+    Artist:: {{t.artist}}
+    Year:: {{t.year}}
+    Genre: {{t.genre}}
+  </div>
+  {% endfor %}
+</div>
+
+<script>
+// AJAX posting x-www-form-urlencoded
+var button = document.getElementById('create');
+button.onclick = function () {
+  var xhr = new XMLHttpRequest();
+  xhr.open('POST', '/addAlbum');
+  xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+  xhr.onload = function() {
+    if (xhr.status === 200) {
+      refreshAlbums();
+    } else if (xhr.status !== 200) {
+      alert('Request failed.  Returned status of ' + xhr.status);
+    }
+  };
+  var name = document.getElementById('name').value;
+  var artist = document.getElementById('artist').value;
+  var year = document.getElementById('year').value;
+  var genre = document.getElementById('genre').value;
+  var body = 'name=' + encodeURIComponent(name)+'&artist=' + encodeURIComponent(artist)+'&year=' + encodeURIComponent(year)+
+  'genre=' + encodeURIComponent(genre);
+  console.log(body);
+  xhr.send(body);
+};
+
+function refreshAlbums() {
+  var xhr = new XMLHttpRequest();
+  // ravi changes start
+  // xhr.open('GET', '/getTweets');
+  // xhr.open('GET', '/getTweets?reqType=' + reqType);
+  // xhr.open('GET', '/getreplies?tweetID=' + tweetID);
+  // ravi changes end
+  xhr.open('GET', '/newAlbumList');
+  xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+  xhr.onload = function() {
+    if (xhr.status === 200) {
+      // document.getElementById('ShowButton').innerText = 'Show filter';
+      document.getElementById('albums').innerHTML = xhr.responseText;
+      console.log("inserted tweets");
+      //ravi comehere
+      document.getElementById('name').value = '';
+      document.getElementById('artist').value = '';
+      document.getElementById('year').value = '';
+      document.getElementById('genre').value = '';
+    } else if (xhr.status !== 200) {
+      divResponseMsg.innerHTML = "Request failed.  Returned status of " + xhr.status;
+    }
+  };
+  xhr.send();
+}
+
+</script>
+</body>
+</html>

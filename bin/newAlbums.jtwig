@@ -1,0 +1,8 @@
+{% for t in albums %}
+<div >
+  Album::  {{t.name}}
+  Artist:: {{t.artist}}
+  Year:: {{t.year}}
+  Genre: {{t.genre}}
+</div>
+{% endfor %}
